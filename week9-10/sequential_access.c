@@ -46,6 +46,8 @@ int main(){
             break; 
         } 
     } 
-    if(!found) printf("File not found");} 
+    if(!found) printf("File not found"); 
     return 0; 
 }
+
+//
