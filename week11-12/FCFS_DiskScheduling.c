@@ -8,7 +8,7 @@ int main(){
     for(int i=0; i<n; i++){
         scanf("%d", &requests[i]);
     }
-    head=requests[0];
+    head=requests[0];  // Initialize head to the first request as in question head input is not given separately
     for(int i=0; i<n; i++){
         curr = requests[i];
         seek_time += (curr > head) ? (curr - head) : (head - curr);
