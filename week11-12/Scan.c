@@ -1,72 +1,107 @@
 #include <stdio.h>
+
 #include <stdlib.h>
 
-int main() {
-    int n;
-    printf("Enter number of disk requests : ");
-    scanf("%d", &n);
+#define LOW 0
 
-    int requests[n];
-    for (int i = 0; i < n; i++)
-        scanf("%d", &requests[i]);
+#define HIGH 199
 
-    int head = requests[0]; // first request is head
-    int total_requests = n - 1;
-    int seek_time = 0, direction, index = 0;
-    // Shift remaining requests (remove the first one)
-    for (int i = 0; i < total_requests; i++)
-        requests[i] = requests[i + 1];
-    
-    // Automatically decide direction based on first request
-    if (requests[0] > head)
-        direction = 1; // move right
-    else
-        direction = 0; // move left
-    // Sort remaining requests
-    for (int i = 0; i < total_requests - 1; i++) {
-        for (int j = i + 1; j < total_requests; j++) {
-            if (requests[i] > requests[j]) {
-                int temp = requests[i];
-                requests[i] = requests[j];
-                requests[j] = temp;
+int main()
+{
+
+    int queue[20];
+
+    int head, q_size, temp;
+
+    int total_movement = 0;
+
+    int head_index;
+
+    printf("Enter number of disk requests: ");
+
+    scanf("%d", &q_size);
+
+    printf("Enter head position: ");
+
+    scanf("%d", &head);
+
+    printf("Enter disk requests:\n");
+
+    for (int i = 0; i < q_size; i++)
+    {
+
+        scanf("%d", &queue[i]);
+    }
+
+    queue[q_size] = head;
+
+    q_size++;
+
+    for (int i = 0; i < q_size - 1; i++)
+    {
+
+        for (int j = i + 1; j < q_size; j++)
+        {
+
+            if (queue[i] > queue[j])
+            {
+
+                temp = queue[i];
+
+                queue[i] = queue[j];
+
+                queue[j] = temp;
             }
         }
     }
-    // Find first request greater than head
-    for (int i = 0; i < total_requests; i++) {
-        if (head < requests[i]) {
-            index = i;
+
+    for (int i = 0; i < q_size; i++)
+    {
+
+        if (queue[i] == head)
+        {
+
+            head_index = i;
+
             break;
         }
     }
 
-    // SCAN algorithm
-    if (direction == 1) {
-        // Move right first
-        for (int i = index; i < total_requests; i++) {
-            seek_time += abs(head - requests[i]);
-            head = requests[i];
-        }
-        seek_time += abs(head - 199); // end of disk
-        head = 199;
-        for (int i = index - 1; i >= 0; i--) {
-            seek_time += abs(head - requests[i]);
-            head = requests[i];
-        }
-    } else {
-        // Move left first
-        for (int i = index - 1; i >= 0; i--) {
-            seek_time += abs(head - requests[i]);
-            head = requests[i];
-        }
-        seek_time += abs(head - 0);
-        head = 0;
-        for (int i = index; i < total_requests; i++) {
-            seek_time += abs(head - requests[i]);
-            head = requests[i];
-        }
+    printf("\n--------------------------------------------\n");
+
+    printf("Disk Sequence (C-SCAN Order):\n");
+
+    printf("--------------------------------------------\n");
+
+    printf("%d", head);
+
+    for (int i = head_index + 1; i < q_size; i++)
+    {
+
+        printf(" --> %d", queue[i]);
     }
 
-    printf("Total seek movement : %d\n", seek_time);
+    if (queue[q_size - 1] != HIGH)
+
+        printf(" --> %d", HIGH);
+
+    printf(" --> %d", LOW);
+
+    for (int i = 0; i < head_index; i++)
+    {
+
+        printf(" --> %d", queue[i]);
+    }
+
+    total_movement = (HIGH - head) + (HIGH - LOW) + (queue[head_index - 1] - LOW);
+
+    printf("\n\n--------------------------------------------\n");
+
+    printf("Total Head Movement = %d\n", total_movement);
+
+    printf("Average Head Movement = %.2f\n", (float)total_movement / (q_size - 1));
+
+    printf("--------------------------------------------\n");
+
     return 0;
 }
